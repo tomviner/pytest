@@ -1,0 +1,415 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>The writing and reporting of assertions in tests</title>
+    
+    <link rel="stylesheet" href="_static/flasky.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    './',
+        VERSION:     '2.9.0.dev1',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <link rel="shortcut icon" href="_static/pytest1favi.ico"/>
+    <link rel="top" title="None" href="index.html" />
+   
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9">
+
+  </head>
+  <body>
+<div align="center" xmlns="http://www.w3.org/1999/html" style="background-color: lightgreen;  padding: .5em">
+  <h4>
+      Want to help improve pytest?  Please 
+    <a href="https://www.indiegogo.com/projects/python-testing-sprint-mid-2016#/">
+        contribute to
+    </a>
+    or 
+    <a href="announce/sprint2016.html">
+        join
+    </a>
+    our upcoming sprint in June 2016!
+
+  </h4>
+</div>
+  
+  
+  
+
+
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li><a href="contents.html">pytest-2.9.0.dev1</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="the-writing-and-reporting-of-assertions-in-tests">
+<h1>The writing and reporting of assertions in tests<a class="headerlink" href="#the-writing-and-reporting-of-assertions-in-tests" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="asserting-with-the-assert-statement">
+<span id="assert"></span><span id="assert-with-the-assert-statement"></span><span id="assertfeedback"></span><h2>Asserting with the <tt class="docutils literal"><span class="pre">assert</span></tt> statement<a class="headerlink" href="#asserting-with-the-assert-statement" title="Permalink to this headline">¶</a></h2>
+<p><tt class="docutils literal"><span class="pre">pytest</span></tt> allows you to use the standard python <tt class="docutils literal"><span class="pre">assert</span></tt> for verifying
+expectations and values in Python tests.  For example, you can write the
+following:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="c"># content of test_assert1.py</span>
+<span class="k">def</span> <span class="nf">f</span><span class="p">():</span>
+    <span class="k">return</span> <span class="mi">3</span>
+
+<span class="k">def</span> <span class="nf">test_function</span><span class="p">():</span>
+    <span class="k">assert</span> <span class="n">f</span><span class="p">()</span> <span class="o">==</span> <span class="mi">4</span>
+</pre></div>
+</div>
+<p>to assert that your function returns a certain value. If this assertion fails
+you will see the return value of the function call:</p>
+<div class="highlight-python"><div class="highlight"><pre>$ py.test test_assert1.py
+======= test session starts ========
+platform linux -- Python 3.4.3, pytest-2.8.7, py-1.4.31, pluggy-0.3.1
+rootdir: $REGENDOC_TMPDIR, inifile:
+collected 1 items
+
+test_assert1.py F
+
+======= FAILURES ========
+_______ test_function ________
+
+    def test_function():
+&gt;       assert f() == 4
+E       assert 3 == 4
+E        +  where 3 = f()
+
+test_assert1.py:5: AssertionError
+======= 1 failed in 0.12 seconds ========
+</pre></div>
+</div>
+<p><tt class="docutils literal"><span class="pre">pytest</span></tt> has support for showing the values of the most common subexpressions
+including calls, attributes, comparisons, and binary and unary
+operators. (See <a class="reference internal" href="example/reportingdemo.html#tbreportdemo"><em>Demo of Python failure reports with pytest</em></a>).  This allows you to use the
+idiomatic python constructs without boilerplate code while not losing
+introspection information.</p>
+<p>However, if you specify a message with the assertion like this:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="k">assert</span> <span class="n">a</span> <span class="o">%</span> <span class="mi">2</span> <span class="o">==</span> <span class="mi">0</span><span class="p">,</span> <span class="s">&quot;value was odd, should be even&quot;</span>
+</pre></div>
+</div>
+<p>then no assertion introspection takes places at all and the message
+will be simply shown in the traceback.</p>
+<p>See <a class="reference internal" href="#assert-details"><em>Advanced assertion introspection</em></a> for more information on assertion introspection.</p>
+</div>
+<div class="section" id="assertions-about-expected-exceptions">
+<span id="assertraises"></span><h2>Assertions about expected exceptions<a class="headerlink" href="#assertions-about-expected-exceptions" title="Permalink to this headline">¶</a></h2>
+<p>In order to write assertions about raised exceptions, you can use
+<tt class="docutils literal"><span class="pre">pytest.raises</span></tt> as a context manager like this:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="kn">import</span> <span class="nn">pytest</span>
+
+<span class="k">def</span> <span class="nf">test_zero_division</span><span class="p">():</span>
+    <span class="k">with</span> <span class="n">pytest</span><span class="o">.</span><span class="n">raises</span><span class="p">(</span><span class="ne">ZeroDivisionError</span><span class="p">):</span>
+        <span class="mi">1</span> <span class="o">/</span> <span class="mi">0</span>
+</pre></div>
+</div>
+<p>and if you need to have access to the actual exception info you may use:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="k">def</span> <span class="nf">test_recursion_depth</span><span class="p">():</span>
+    <span class="k">with</span> <span class="n">pytest</span><span class="o">.</span><span class="n">raises</span><span class="p">(</span><span class="ne">RuntimeError</span><span class="p">)</span> <span class="k">as</span> <span class="n">excinfo</span><span class="p">:</span>
+        <span class="k">def</span> <span class="nf">f</span><span class="p">():</span>
+            <span class="n">f</span><span class="p">()</span>
+        <span class="n">f</span><span class="p">()</span>
+    <span class="k">assert</span> <span class="s">&#39;maximum recursion&#39;</span> <span class="ow">in</span> <span class="nb">str</span><span class="p">(</span><span class="n">excinfo</span><span class="o">.</span><span class="n">value</span><span class="p">)</span>
+</pre></div>
+</div>
+<p><tt class="docutils literal"><span class="pre">excinfo</span></tt> is a <tt class="docutils literal"><span class="pre">ExceptionInfo</span></tt> instance, which is a wrapper around
+the actual exception raised.  The main attributes of interest are
+<tt class="docutils literal"><span class="pre">.type</span></tt>, <tt class="docutils literal"><span class="pre">.value</span></tt> and <tt class="docutils literal"><span class="pre">.traceback</span></tt>.</p>
+<p>If you want to write test code that works on Python 2.4 as well,
+you may also use two other ways to test for an expected exception:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">pytest</span><span class="o">.</span><span class="n">raises</span><span class="p">(</span><span class="n">ExpectedException</span><span class="p">,</span> <span class="n">func</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+<span class="n">pytest</span><span class="o">.</span><span class="n">raises</span><span class="p">(</span><span class="n">ExpectedException</span><span class="p">,</span> <span class="s">&quot;func(*args, **kwargs)&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>both of which execute the specified function with args and kwargs and
+asserts that the given <tt class="docutils literal"><span class="pre">ExpectedException</span></tt> is raised.  The reporter will
+provide you with helpful output in case of failures such as <em>no
+exception</em> or <em>wrong exception</em>.</p>
+<p>Note that it is also possible to specify a &#8220;raises&#8221; argument to
+<tt class="docutils literal"><span class="pre">pytest.mark.xfail</span></tt>, which checks that the test is failing in a more
+specific way than just having any exception raised:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="nd">@pytest.mark.xfail</span><span class="p">(</span><span class="n">raises</span><span class="o">=</span><span class="ne">IndexError</span><span class="p">)</span>
+<span class="k">def</span> <span class="nf">test_f</span><span class="p">():</span>
+    <span class="n">f</span><span class="p">()</span>
+</pre></div>
+</div>
+<p>Using <tt class="docutils literal"><span class="pre">pytest.raises</span></tt> is likely to be better for cases where you are testing
+exceptions your own code is deliberately raising, whereas using
+<tt class="docutils literal"><span class="pre">&#64;pytest.mark.xfail</span></tt> with a check function is probably better for something
+like documenting unfixed bugs (where the test describes what &#8220;should&#8221; happen)
+or bugs in dependencies.</p>
+</div>
+<div class="section" id="assertions-about-expected-warnings">
+<span id="assertwarns"></span><h2>Assertions about expected warnings<a class="headerlink" href="#assertions-about-expected-warnings" title="Permalink to this headline">¶</a></h2>
+<div class="versionadded">
+<p><span class="versionmodified">New in version 2.8.</span></p>
+</div>
+<p>You can check that code raises a particular warning using
+<a class="reference internal" href="recwarn.html#warns"><em>pytest.warns</em></a>.</p>
+</div>
+<div class="section" id="making-use-of-context-sensitive-comparisons">
+<span id="newreport"></span><h2>Making use of context-sensitive comparisons<a class="headerlink" href="#making-use-of-context-sensitive-comparisons" title="Permalink to this headline">¶</a></h2>
+<div class="versionadded">
+<p><span class="versionmodified">New in version 2.0.</span></p>
+</div>
+<p><tt class="docutils literal"><span class="pre">pytest</span></tt> has rich support for providing context-sensitive information
+when it encounters comparisons.  For example:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="c"># content of test_assert2.py</span>
+
+<span class="k">def</span> <span class="nf">test_set_comparison</span><span class="p">():</span>
+    <span class="n">set1</span> <span class="o">=</span> <span class="nb">set</span><span class="p">(</span><span class="s">&quot;1308&quot;</span><span class="p">)</span>
+    <span class="n">set2</span> <span class="o">=</span> <span class="nb">set</span><span class="p">(</span><span class="s">&quot;8035&quot;</span><span class="p">)</span>
+    <span class="k">assert</span> <span class="n">set1</span> <span class="o">==</span> <span class="n">set2</span>
+</pre></div>
+</div>
+<p>if you run this module:</p>
+<div class="highlight-python"><div class="highlight"><pre>$ py.test test_assert2.py
+======= test session starts ========
+platform linux -- Python 3.4.3, pytest-2.8.7, py-1.4.31, pluggy-0.3.1
+rootdir: $REGENDOC_TMPDIR, inifile:
+collected 1 items
+
+test_assert2.py F
+
+======= FAILURES ========
+_______ test_set_comparison ________
+
+    def test_set_comparison():
+        set1 = set(&quot;1308&quot;)
+        set2 = set(&quot;8035&quot;)
+&gt;       assert set1 == set2
+E       assert set([&#39;0&#39;, &#39;1&#39;, &#39;3&#39;, &#39;8&#39;]) == set([&#39;0&#39;, &#39;3&#39;, &#39;5&#39;, &#39;8&#39;])
+E         Extra items in the left set:
+E         &#39;1&#39;
+E         Extra items in the right set:
+E         &#39;5&#39;
+E         Use -v to get the full diff
+
+test_assert2.py:5: AssertionError
+======= 1 failed in 0.12 seconds ========
+</pre></div>
+</div>
+<p>Special comparisons are done for a number of cases:</p>
+<ul class="simple">
+<li>comparing long strings: a context diff is shown</li>
+<li>comparing long sequences: first failing indices</li>
+<li>comparing dicts: different entries</li>
+</ul>
+<p>See the <a class="reference internal" href="example/reportingdemo.html#tbreportdemo"><em>reporting demo</em></a> for many more examples.</p>
+</div>
+<div class="section" id="defining-your-own-assertion-comparison">
+<h2>Defining your own assertion comparison<a class="headerlink" href="#defining-your-own-assertion-comparison" title="Permalink to this headline">¶</a></h2>
+<p>It is possible to add your own detailed explanations by implementing
+the <tt class="docutils literal"><span class="pre">pytest_assertrepr_compare</span></tt> hook.</p>
+<p>As an example consider adding the following hook in a conftest.py which
+provides an alternative explanation for <tt class="docutils literal"><span class="pre">Foo</span></tt> objects:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="c"># content of conftest.py</span>
+<span class="kn">from</span> <span class="nn">test_foocompare</span> <span class="kn">import</span> <span class="n">Foo</span>
+<span class="k">def</span> <span class="nf">pytest_assertrepr_compare</span><span class="p">(</span><span class="n">op</span><span class="p">,</span> <span class="n">left</span><span class="p">,</span> <span class="n">right</span><span class="p">):</span>
+    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">left</span><span class="p">,</span> <span class="n">Foo</span><span class="p">)</span> <span class="ow">and</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">right</span><span class="p">,</span> <span class="n">Foo</span><span class="p">)</span> <span class="ow">and</span> <span class="n">op</span> <span class="o">==</span> <span class="s">&quot;==&quot;</span><span class="p">:</span>
+        <span class="k">return</span> <span class="p">[</span><span class="s">&#39;Comparing Foo instances:&#39;</span><span class="p">,</span>
+                <span class="s">&#39;   vals: </span><span class="si">%s</span><span class="s"> != </span><span class="si">%s</span><span class="s">&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">left</span><span class="o">.</span><span class="n">val</span><span class="p">,</span> <span class="n">right</span><span class="o">.</span><span class="n">val</span><span class="p">)]</span>
+</pre></div>
+</div>
+<p>now, given this test module:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="c"># content of test_foocompare.py</span>
+<span class="k">class</span> <span class="nc">Foo</span><span class="p">:</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">val</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">val</span> <span class="o">=</span> <span class="n">val</span>
+
+    <span class="k">def</span> <span class="nf">__eq__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">val</span> <span class="o">==</span> <span class="n">other</span><span class="o">.</span><span class="n">val</span>
+
+<span class="k">def</span> <span class="nf">test_compare</span><span class="p">():</span>
+    <span class="n">f1</span> <span class="o">=</span> <span class="n">Foo</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+    <span class="n">f2</span> <span class="o">=</span> <span class="n">Foo</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span>
+    <span class="k">assert</span> <span class="n">f1</span> <span class="o">==</span> <span class="n">f2</span>
+</pre></div>
+</div>
+<p>you can run the test module and get the custom output defined in
+the conftest file:</p>
+<div class="highlight-python"><div class="highlight"><pre>$ py.test -q test_foocompare.py
+F
+======= FAILURES ========
+_______ test_compare ________
+
+    def test_compare():
+        f1 = Foo(1)
+        f2 = Foo(2)
+&gt;       assert f1 == f2
+E       assert Comparing Foo instances:
+E            vals: 1 != 2
+
+test_foocompare.py:11: AssertionError
+1 failed in 0.12 seconds
+</pre></div>
+</div>
+</div>
+<div class="section" id="advanced-assertion-introspection">
+<span id="assert-introspection"></span><span id="assert-details"></span><h2>Advanced assertion introspection<a class="headerlink" href="#advanced-assertion-introspection" title="Permalink to this headline">¶</a></h2>
+<div class="versionadded">
+<p><span class="versionmodified">New in version 2.1.</span></p>
+</div>
+<p>Reporting details about a failing assertion is achieved either by rewriting
+assert statements before they are run or re-evaluating the assert expression and
+recording the intermediate values. Which technique is used depends on the
+location of the assert, <tt class="docutils literal"><span class="pre">pytest</span></tt> configuration, and Python version being used
+to run <tt class="docutils literal"><span class="pre">pytest</span></tt>.</p>
+<p>By default, <tt class="docutils literal"><span class="pre">pytest</span></tt> rewrites assert statements in test modules.
+Rewritten assert statements put introspection information into the assertion failure message.
+<tt class="docutils literal"><span class="pre">pytest</span></tt> only rewrites test modules directly discovered by its test collection process, so
+asserts in supporting modules which are not themselves test modules will not be
+rewritten.</p>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last"><tt class="docutils literal"><span class="pre">pytest</span></tt> rewrites test modules on import. It does this by using an import
+hook to write a new pyc files. Most of the time this works transparently.
+However, if you are messing with import yourself, the import hook may
+interfere. If this is the case, simply use <tt class="docutils literal"><span class="pre">--assert=reinterp</span></tt> or
+<tt class="docutils literal"><span class="pre">--assert=plain</span></tt>. Additionally, rewriting will fail silently if it cannot
+write new pycs, i.e. in a read-only filesystem or a zipfile.</p>
+</div>
+<p>If an assert statement has not been rewritten or the Python version is less than
+2.6, <tt class="docutils literal"><span class="pre">pytest</span></tt> falls back on assert reinterpretation. In assert
+reinterpretation, <tt class="docutils literal"><span class="pre">pytest</span></tt> walks the frame of the function containing the
+assert statement to discover sub-expression results of the failing assert
+statement. You can force <tt class="docutils literal"><span class="pre">pytest</span></tt> to always use assertion reinterpretation by
+passing the <tt class="docutils literal"><span class="pre">--assert=reinterp</span></tt> option.</p>
+<p>Assert reinterpretation has a caveat not present with assert rewriting: If
+evaluating the assert expression has side effects you may get a warning that the
+intermediate values could not be determined safely.  A common example of this
+issue is an assertion which reads from a file:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="k">assert</span> <span class="n">f</span><span class="o">.</span><span class="n">read</span><span class="p">()</span> <span class="o">!=</span> <span class="s">&#39;...&#39;</span>
+</pre></div>
+</div>
+<p>If this assertion fails then the re-evaluation will probably succeed!
+This is because <tt class="docutils literal"><span class="pre">f.read()</span></tt> will return an empty string when it is
+called the second time during the re-evaluation.  However, it is
+easy to rewrite the assertion and avoid any trouble:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">content</span> <span class="o">=</span> <span class="n">f</span><span class="o">.</span><span class="n">read</span><span class="p">()</span>
+<span class="k">assert</span> <span class="n">content</span> <span class="o">!=</span> <span class="s">&#39;...&#39;</span>
+</pre></div>
+</div>
+<p>All assert introspection can be turned off by passing <tt class="docutils literal"><span class="pre">--assert=plain</span></tt>.</p>
+<p>For further information, Benjamin Peterson wrote up <a class="reference external" href="http://pybites.blogspot.com/2011/07/behind-scenes-of-pytests-new-assertion.html">Behind the scenes of pytest&#8217;s new assertion rewriting</a>.</p>
+<div class="versionadded">
+<p><span class="versionmodified">New in version 2.1: </span>Add assert rewriting as an alternate introspection technique.</p>
+</div>
+<div class="versionchanged">
+<p><span class="versionmodified">Changed in version 2.1: </span>Introduce the <tt class="docutils literal"><span class="pre">--assert</span></tt> option. Deprecate <tt class="docutils literal"><span class="pre">--no-assert</span></tt> and
+<tt class="docutils literal"><span class="pre">--nomagic</span></tt>.</p>
+</div>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+            <p class="logo"><a href="contents.html">
+              <img class="logo" src="_static/pytest1.png" alt="Logo"/>
+            </a></p><h3><a href="contents.html">Table Of Contents</a></h3>
+
+<ul>
+  <li><a href="index.html">Home</a></li>
+  <li><a href="contents.html">Contents</a></li>
+  <li><a href="getting-started.html">Install</a></li>
+  <li><a href="example/index.html">Examples</a></li>
+  <li><a href="customize.html">Customize</a></li>
+  <li><a href="contact.html">Contact</a></li>
+  <li><a href="talks.html">Talks/Posts</a></li>
+  <li><a href="changelog.html">Changelog</a></li>
+</ul>
+  <hr>
+  <ul>
+<li><a class="reference internal" href="#">The writing and reporting of assertions in tests</a><ul>
+<li><a class="reference internal" href="#asserting-with-the-assert-statement">Asserting with the <tt class="docutils literal"><span class="pre">assert</span></tt> statement</a></li>
+<li><a class="reference internal" href="#assertions-about-expected-exceptions">Assertions about expected exceptions</a></li>
+<li><a class="reference internal" href="#assertions-about-expected-warnings">Assertions about expected warnings</a></li>
+<li><a class="reference internal" href="#making-use-of-context-sensitive-comparisons">Making use of context-sensitive comparisons</a></li>
+<li><a class="reference internal" href="#defining-your-own-assertion-comparison">Defining your own assertion comparison</a></li>
+<li><a class="reference internal" href="#advanced-assertion-introspection">Advanced assertion introspection</a></li>
+</ul>
+</li>
+</ul>
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="contents.html">Documentation overview</a><ul>
+  </ul></li>
+</ul><h3>Useful Links</h3>
+<ul>
+  <li>
+    <a href="https://www.indiegogo.com/projects/python-testing-sprint-mid-2016#/">
+      <b>Sprint funding campaign</b>
+    </a>
+  </li>
+  <li><a href="index.html">The pytest Website</a></li>
+  <li><a href="contributing.html">Contribution Guide</a></li>
+  <li><a href="https://pypi.python.org/pypi/pytest">pytest @ PyPI</a></li>
+  <li><a href="https://github.com/pytest-dev/pytest/">pytest @ GitHub</a></li>
+  <li><a href="http://plugincompat.herokuapp.com/">3rd party plugins</a></li>
+  <li><a href="https://github.com/pytest-dev/pytest/issues">Issue Tracker</a></li>
+  <li><a href="http://pytest.org/latest/pytest.pdf">PDF Documentation</a>
+</ul>
+
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+
+  <div class="footer">
+    &copy; Copyright 2015, holger krekel and pytest-dev team.
+    Created using <a href="http://sphinx.pocoo.org/">Sphinx</a>.
+  </div>
+  
+<script type="text/javascript">
+
+  var _gaq = _gaq || [];
+  _gaq.push(['_setAccount', 'UA-7597274-13']);
+  _gaq.push(['_trackPageview']);
+
+  (function() {
+    var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+    ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+  })();
+
+</script>
+
+  </body>
+</html>

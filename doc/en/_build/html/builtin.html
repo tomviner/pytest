@@ -1,0 +1,254 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>Pytest API and builtin fixtures</title>
+    
+    <link rel="stylesheet" href="_static/flasky.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    './',
+        VERSION:     '2.9.0.dev1',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <link rel="shortcut icon" href="_static/pytest1favi.ico"/>
+    <link rel="top" title="None" href="index.html" />
+   
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9">
+
+  </head>
+  <body>
+<div align="center" xmlns="http://www.w3.org/1999/html" style="background-color: lightgreen;  padding: .5em">
+  <h4>
+      Want to help improve pytest?  Please 
+    <a href="https://www.indiegogo.com/projects/python-testing-sprint-mid-2016#/">
+        contribute to
+    </a>
+    or 
+    <a href="announce/sprint2016.html">
+        join
+    </a>
+    our upcoming sprint in June 2016!
+
+  </h4>
+</div>
+  
+  
+  
+
+
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li><a href="contents.html">pytest-2.9.0.dev1</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="pytest-api-and-builtin-fixtures">
+<span id="pytest-helpers"></span><h1>Pytest API and builtin fixtures<a class="headerlink" href="#pytest-api-and-builtin-fixtures" title="Permalink to this headline">¶</a></h1>
+<p>This is a list of <tt class="docutils literal"><span class="pre">pytest.*</span></tt> API functions and fixtures.</p>
+<p>For information on plugin hooks and objects, see <a class="reference internal" href="writing_plugins.html#plugins"><em>Writing plugins</em></a>.</p>
+<p>For information on the <tt class="docutils literal"><span class="pre">pytest.mark</span></tt> mechanism, see <a class="reference internal" href="mark.html#mark"><em>Marking test functions with attributes</em></a>.</p>
+<p>For the below objects, you can also interactively ask for help, e.g. by
+typing on the Python interactive prompt something like:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="kn">import</span> <span class="nn">pytest</span>
+<span class="n">help</span><span class="p">(</span><span class="n">pytest</span><span class="p">)</span>
+</pre></div>
+</div>
+<div class="section" id="invoking-pytest-interactively">
+<h2>Invoking pytest interactively<a class="headerlink" href="#invoking-pytest-interactively" title="Permalink to this headline">¶</a></h2>
+<p>More examples at <a class="reference internal" href="usage.html#pytest-main-usage"><em>Calling pytest from Python code</em></a></p>
+</div>
+<div class="section" id="helpers-for-assertions-about-exceptions-warnings">
+<h2>Helpers for assertions about Exceptions/Warnings<a class="headerlink" href="#helpers-for-assertions-about-exceptions-warnings" title="Permalink to this headline">¶</a></h2>
+<p>Examples at <a class="reference internal" href="assert.html#assertraises"><em>Assertions about expected exceptions</em></a>.</p>
+</div>
+<div class="section" id="raising-a-specific-test-outcome">
+<h2>Raising a specific test outcome<a class="headerlink" href="#raising-a-specific-test-outcome" title="Permalink to this headline">¶</a></h2>
+<p>You can use the following functions in your test, fixture or setup
+functions to force a certain test outcome.  Note that most often
+you can rather use declarative marks, see <a class="reference internal" href="skipping.html#skipping"><em>Skip and xfail: dealing with tests that can not succeed</em></a>.</p>
+</div>
+<div class="section" id="fixtures-and-requests">
+<h2>fixtures and requests<a class="headerlink" href="#fixtures-and-requests" title="Permalink to this headline">¶</a></h2>
+<p>To mark a fixture function:</p>
+<p>Tutorial at <a class="reference internal" href="fixture.html#fixtures"><em>pytest fixtures: explicit, modular, scalable</em></a>.</p>
+<p>The <tt class="docutils literal"><span class="pre">request</span></tt> object that can be used from fixture functions.</p>
+</div>
+<div class="section" id="builtin-fixtures-function-arguments">
+<span id="builtinfuncargs"></span><span id="builtinfixtures"></span><h2>Builtin fixtures/function arguments<a class="headerlink" href="#builtin-fixtures-function-arguments" title="Permalink to this headline">¶</a></h2>
+<p>You can ask for available builtin or project-custom
+<a class="reference internal" href="fixture.html#fixtures"><em>fixtures</em></a> by typing:</p>
+<div class="highlight-python"><div class="highlight"><pre>$ py.test -q --fixtures
+cache
+    Return a cache object that can persist state between testing sessions.
+
+    cache.get(key, default)
+    cache.set(key, value)
+
+    Keys must be a ``/`` separated value, where the first part is usually the
+    name of your plugin or application to avoid clashes with other cache users.
+
+    Values can be any object handled by the json stdlib module.
+capsys
+    enables capturing of writes to sys.stdout/sys.stderr and makes
+    captured output available via ``capsys.readouterr()`` method calls
+    which return a ``(out, err)`` tuple.
+capfd
+    enables capturing of writes to file descriptors 1 and 2 and makes
+    captured output available via ``capfd.readouterr()`` method calls
+    which return a ``(out, err)`` tuple.
+record_xml_property
+    Fixture that adds extra xml properties to the tag for the calling test.
+    The fixture is callable with (name, value), with value being automatically
+    xml-encoded.
+monkeypatch
+    The returned ``monkeypatch`` funcarg provides these
+    helper methods to modify objects, dictionaries or os.environ::
+
+    monkeypatch.setattr(obj, name, value, raising=True)
+    monkeypatch.delattr(obj, name, raising=True)
+    monkeypatch.setitem(mapping, name, value)
+    monkeypatch.delitem(obj, name, raising=True)
+    monkeypatch.setenv(name, value, prepend=False)
+    monkeypatch.delenv(name, value, raising=True)
+    monkeypatch.syspath_prepend(path)
+    monkeypatch.chdir(path)
+
+    All modifications will be undone after the requesting
+    test function has finished. The ``raising``
+    parameter determines if a KeyError or AttributeError
+    will be raised if the set/deletion operation has no target.
+pytestconfig
+    the pytest config object with access to command line opts.
+recwarn
+    Return a WarningsRecorder instance that provides these methods:
+
+    * ``pop(category=None)``: return last warning matching the category.
+    * ``clear()``: clear list of warnings
+
+    See http://docs.python.org/library/warnings.html for information
+    on warning categories.
+tmpdir_factory
+    Return a TempdirFactory instance for the test session.
+tmpdir
+    return a temporary directory path object
+    which is unique to each test function invocation,
+    created as a sub directory of the base temporary
+    directory.  The returned object is a `py.path.local`_
+    path object.
+
+no tests ran in 0.12 seconds
+</pre></div>
+</div>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+            <p class="logo"><a href="contents.html">
+              <img class="logo" src="_static/pytest1.png" alt="Logo"/>
+            </a></p><h3><a href="contents.html">Table Of Contents</a></h3>
+
+<ul>
+  <li><a href="index.html">Home</a></li>
+  <li><a href="contents.html">Contents</a></li>
+  <li><a href="getting-started.html">Install</a></li>
+  <li><a href="example/index.html">Examples</a></li>
+  <li><a href="customize.html">Customize</a></li>
+  <li><a href="contact.html">Contact</a></li>
+  <li><a href="talks.html">Talks/Posts</a></li>
+  <li><a href="changelog.html">Changelog</a></li>
+</ul>
+  <hr>
+  <ul>
+<li><a class="reference internal" href="#">Pytest API and builtin fixtures</a><ul>
+<li><a class="reference internal" href="#invoking-pytest-interactively">Invoking pytest interactively</a></li>
+<li><a class="reference internal" href="#helpers-for-assertions-about-exceptions-warnings">Helpers for assertions about Exceptions/Warnings</a></li>
+<li><a class="reference internal" href="#raising-a-specific-test-outcome">Raising a specific test outcome</a></li>
+<li><a class="reference internal" href="#fixtures-and-requests">fixtures and requests</a></li>
+<li><a class="reference internal" href="#builtin-fixtures-function-arguments">Builtin fixtures/function arguments</a></li>
+</ul>
+</li>
+</ul>
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="contents.html">Documentation overview</a><ul>
+  </ul></li>
+</ul><h3>Useful Links</h3>
+<ul>
+  <li>
+    <a href="https://www.indiegogo.com/projects/python-testing-sprint-mid-2016#/">
+      <b>Sprint funding campaign</b>
+    </a>
+  </li>
+  <li><a href="index.html">The pytest Website</a></li>
+  <li><a href="contributing.html">Contribution Guide</a></li>
+  <li><a href="https://pypi.python.org/pypi/pytest">pytest @ PyPI</a></li>
+  <li><a href="https://github.com/pytest-dev/pytest/">pytest @ GitHub</a></li>
+  <li><a href="http://plugincompat.herokuapp.com/">3rd party plugins</a></li>
+  <li><a href="https://github.com/pytest-dev/pytest/issues">Issue Tracker</a></li>
+  <li><a href="http://pytest.org/latest/pytest.pdf">PDF Documentation</a>
+</ul>
+
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+
+  <div class="footer">
+    &copy; Copyright 2015, holger krekel and pytest-dev team.
+    Created using <a href="http://sphinx.pocoo.org/">Sphinx</a>.
+  </div>
+  
+<script type="text/javascript">
+
+  var _gaq = _gaq || [];
+  _gaq.push(['_setAccount', 'UA-7597274-13']);
+  _gaq.push(['_trackPageview']);
+
+  (function() {
+    var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+    ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+  })();
+
+</script>
+
+  </body>
+</html>

@@ -1,0 +1,272 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>Asserting Warnings</title>
+    
+    <link rel="stylesheet" href="_static/flasky.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    './',
+        VERSION:     '2.9.0.dev1',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <link rel="shortcut icon" href="_static/pytest1favi.ico"/>
+    <link rel="top" title="None" href="index.html" />
+   
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9">
+
+  </head>
+  <body>
+<div align="center" xmlns="http://www.w3.org/1999/html" style="background-color: lightgreen;  padding: .5em">
+  <h4>
+      Want to help improve pytest?  Please 
+    <a href="https://www.indiegogo.com/projects/python-testing-sprint-mid-2016#/">
+        contribute to
+    </a>
+    or 
+    <a href="announce/sprint2016.html">
+        join
+    </a>
+    our upcoming sprint in June 2016!
+
+  </h4>
+</div>
+  
+  
+  
+
+
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li><a href="contents.html">pytest-2.9.0.dev1</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="asserting-warnings">
+<h1>Asserting Warnings<a class="headerlink" href="#asserting-warnings" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="asserting-warnings-with-the-warns-function">
+<span id="warns"></span><h2>Asserting warnings with the warns function<a class="headerlink" href="#asserting-warnings-with-the-warns-function" title="Permalink to this headline">¶</a></h2>
+<div class="versionadded">
+<p><span class="versionmodified">New in version 2.8.</span></p>
+</div>
+<p>You can check that code raises a particular warning using <tt class="docutils literal"><span class="pre">pytest.warns</span></tt>,
+which works in a similar manner to <a class="reference internal" href="assert.html#assertraises"><em>raises</em></a>:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="kn">import</span> <span class="nn">warnings</span>
+<span class="kn">import</span> <span class="nn">pytest</span>
+
+<span class="k">def</span> <span class="nf">test_warning</span><span class="p">():</span>
+    <span class="k">with</span> <span class="n">pytest</span><span class="o">.</span><span class="n">warns</span><span class="p">(</span><span class="ne">UserWarning</span><span class="p">):</span>
+        <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="s">&quot;my warning&quot;</span><span class="p">,</span> <span class="ne">UserWarning</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>The test will fail if the warning in question is not raised.</p>
+<p>You can also call <tt class="docutils literal"><span class="pre">pytest.warns</span></tt> on a function or code string:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">pytest</span><span class="o">.</span><span class="n">warns</span><span class="p">(</span><span class="n">expected_warning</span><span class="p">,</span> <span class="n">func</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+<span class="n">pytest</span><span class="o">.</span><span class="n">warns</span><span class="p">(</span><span class="n">expected_warning</span><span class="p">,</span> <span class="s">&quot;func(*args, **kwargs)&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>The function also returns a list of all raised warnings (as
+<tt class="docutils literal"><span class="pre">warnings.WarningMessage</span></tt> objects), which you can query for
+additional information:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="k">with</span> <span class="n">pytest</span><span class="o">.</span><span class="n">warns</span><span class="p">(</span><span class="ne">RuntimeWarning</span><span class="p">)</span> <span class="k">as</span> <span class="n">record</span><span class="p">:</span>
+    <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="s">&quot;another warning&quot;</span><span class="p">,</span> <span class="ne">RuntimeWarning</span><span class="p">)</span>
+
+<span class="c"># check that only one warning was raised</span>
+<span class="k">assert</span> <span class="nb">len</span><span class="p">(</span><span class="n">record</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span>
+<span class="c"># check that the message matches</span>
+<span class="k">assert</span> <span class="n">record</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">message</span><span class="o">.</span><span class="n">args</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="s">&quot;another warning&quot;</span>
+</pre></div>
+</div>
+<p>Alternatively, you can examine raised warnings in detail using the
+<a class="reference internal" href="#recwarn"><em>recwarn</em></a> fixture (see below).</p>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last"><tt class="docutils literal"><span class="pre">DeprecationWarning</span></tt> and <tt class="docutils literal"><span class="pre">PendingDeprecationWarning</span></tt> are treated
+differently; see <a class="reference internal" href="#ensuring-function-triggers"><em>Ensuring a function triggers a deprecation warning</em></a>.</p>
+</div>
+</div>
+<div class="section" id="recording-warnings">
+<span id="recwarn"></span><h2>Recording warnings<a class="headerlink" href="#recording-warnings" title="Permalink to this headline">¶</a></h2>
+<p>You can record raised warnings either using <tt class="docutils literal"><span class="pre">pytest.warns</span></tt> or with
+the <tt class="docutils literal"><span class="pre">recwarn</span></tt> fixture.</p>
+<p>To record with <tt class="docutils literal"><span class="pre">pytest.warns</span></tt> without asserting anything about the warnings,
+pass <tt class="docutils literal"><span class="pre">None</span></tt> as the expected warning type:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="k">with</span> <span class="n">pytest</span><span class="o">.</span><span class="n">warns</span><span class="p">(</span><span class="bp">None</span><span class="p">)</span> <span class="k">as</span> <span class="n">record</span><span class="p">:</span>
+    <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="s">&quot;user&quot;</span><span class="p">,</span> <span class="ne">UserWarning</span><span class="p">)</span>
+    <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="s">&quot;runtime&quot;</span><span class="p">,</span> <span class="ne">RuntimeWarning</span><span class="p">)</span>
+
+<span class="k">assert</span> <span class="nb">len</span><span class="p">(</span><span class="n">record</span><span class="p">)</span> <span class="o">==</span> <span class="mi">2</span>
+<span class="k">assert</span> <span class="nb">str</span><span class="p">(</span><span class="n">record</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">message</span><span class="p">)</span> <span class="o">==</span> <span class="s">&quot;user&quot;</span>
+<span class="k">assert</span> <span class="nb">str</span><span class="p">(</span><span class="n">record</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">message</span><span class="p">)</span> <span class="o">==</span> <span class="s">&quot;runtime&quot;</span>
+</pre></div>
+</div>
+<p>The <tt class="docutils literal"><span class="pre">recwarn</span></tt> fixture will record warnings for the whole function:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="kn">import</span> <span class="nn">warnings</span>
+
+<span class="k">def</span> <span class="nf">test_hello</span><span class="p">(</span><span class="n">recwarn</span><span class="p">):</span>
+    <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="s">&quot;hello&quot;</span><span class="p">,</span> <span class="ne">UserWarning</span><span class="p">)</span>
+    <span class="k">assert</span> <span class="nb">len</span><span class="p">(</span><span class="n">recwarn</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span>
+    <span class="n">w</span> <span class="o">=</span> <span class="n">recwarn</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="ne">UserWarning</span><span class="p">)</span>
+    <span class="k">assert</span> <span class="nb">issubclass</span><span class="p">(</span><span class="n">w</span><span class="o">.</span><span class="n">category</span><span class="p">,</span> <span class="ne">UserWarning</span><span class="p">)</span>
+    <span class="k">assert</span> <span class="nb">str</span><span class="p">(</span><span class="n">w</span><span class="o">.</span><span class="n">message</span><span class="p">)</span> <span class="o">==</span> <span class="s">&quot;hello&quot;</span>
+    <span class="k">assert</span> <span class="n">w</span><span class="o">.</span><span class="n">filename</span>
+    <span class="k">assert</span> <span class="n">w</span><span class="o">.</span><span class="n">lineno</span>
+</pre></div>
+</div>
+<p>Both <tt class="docutils literal"><span class="pre">recwarn</span></tt> and <tt class="docutils literal"><span class="pre">pytest.warns</span></tt> return the same interface for recorded
+warnings: a WarningsRecorder instance. To view the recorded warnings, you can
+iterate over this instance, call <tt class="docutils literal"><span class="pre">len</span></tt> on it to get the number of recorded
+warnings, or index into it to get a particular recorded warning. It also
+provides these methods:</p>
+<p>Each recorded warning has the attributes <tt class="docutils literal"><span class="pre">message</span></tt>, <tt class="docutils literal"><span class="pre">category</span></tt>,
+<tt class="docutils literal"><span class="pre">filename</span></tt>, <tt class="docutils literal"><span class="pre">lineno</span></tt>, <tt class="docutils literal"><span class="pre">file</span></tt>, and <tt class="docutils literal"><span class="pre">line</span></tt>. The <tt class="docutils literal"><span class="pre">category</span></tt> is the
+class of the warning. The <tt class="docutils literal"><span class="pre">message</span></tt> is the warning itself; calling
+<tt class="docutils literal"><span class="pre">str(message)</span></tt> will return the actual message of the warning.</p>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last"><tt class="docutils literal"><span class="pre">DeprecationWarning</span></tt> and <tt class="docutils literal"><span class="pre">PendingDeprecationWarning</span></tt> are treated
+differently; see <a class="reference internal" href="#ensuring-function-triggers"><em>Ensuring a function triggers a deprecation warning</em></a>.</p>
+</div>
+</div>
+<div class="section" id="ensuring-a-function-triggers-a-deprecation-warning">
+<span id="ensuring-function-triggers"></span><h2>Ensuring a function triggers a deprecation warning<a class="headerlink" href="#ensuring-a-function-triggers-a-deprecation-warning" title="Permalink to this headline">¶</a></h2>
+<p>You can also call a global helper for checking
+that a certain function call triggers a <tt class="docutils literal"><span class="pre">DeprecationWarning</span></tt> or
+<tt class="docutils literal"><span class="pre">PendingDeprecationWarning</span></tt>:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="kn">import</span> <span class="nn">pytest</span>
+
+<span class="k">def</span> <span class="nf">test_global</span><span class="p">():</span>
+    <span class="n">pytest</span><span class="o">.</span><span class="n">deprecated_call</span><span class="p">(</span><span class="n">myfunction</span><span class="p">,</span> <span class="mi">17</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>By default, <tt class="docutils literal"><span class="pre">DeprecationWarning</span></tt> and <tt class="docutils literal"><span class="pre">PendingDeprecationWarning</span></tt> will not be
+caught when using <tt class="docutils literal"><span class="pre">pytest.warns</span></tt> or <tt class="docutils literal"><span class="pre">recwarn</span></tt> because default Python warnings filters hide
+them. If you wish to record them in your own code, use the
+command <tt class="docutils literal"><span class="pre">warnings.simplefilter('always')</span></tt>:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="kn">import</span> <span class="nn">warnings</span>
+<span class="kn">import</span> <span class="nn">pytest</span>
+
+<span class="k">def</span> <span class="nf">test_deprecation</span><span class="p">(</span><span class="n">recwarn</span><span class="p">):</span>
+    <span class="n">warnings</span><span class="o">.</span><span class="n">simplefilter</span><span class="p">(</span><span class="s">&#39;always&#39;</span><span class="p">)</span>
+    <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="s">&quot;deprecated&quot;</span><span class="p">,</span> <span class="ne">DeprecationWarning</span><span class="p">)</span>
+    <span class="k">assert</span> <span class="nb">len</span><span class="p">(</span><span class="n">recwarn</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span>
+    <span class="k">assert</span> <span class="n">recwarn</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="ne">DeprecationWarning</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>You can also use it as a contextmanager:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="k">def</span> <span class="nf">test_global</span><span class="p">():</span>
+    <span class="k">with</span> <span class="n">pytest</span><span class="o">.</span><span class="n">deprecated_call</span><span class="p">():</span>
+        <span class="n">myobject</span><span class="o">.</span><span class="n">deprecated_method</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+            <p class="logo"><a href="contents.html">
+              <img class="logo" src="_static/pytest1.png" alt="Logo"/>
+            </a></p><h3><a href="contents.html">Table Of Contents</a></h3>
+
+<ul>
+  <li><a href="index.html">Home</a></li>
+  <li><a href="contents.html">Contents</a></li>
+  <li><a href="getting-started.html">Install</a></li>
+  <li><a href="example/index.html">Examples</a></li>
+  <li><a href="customize.html">Customize</a></li>
+  <li><a href="contact.html">Contact</a></li>
+  <li><a href="talks.html">Talks/Posts</a></li>
+  <li><a href="changelog.html">Changelog</a></li>
+</ul>
+  <hr>
+  <ul>
+<li><a class="reference internal" href="#">Asserting Warnings</a><ul>
+<li><a class="reference internal" href="#asserting-warnings-with-the-warns-function">Asserting warnings with the warns function</a></li>
+<li><a class="reference internal" href="#recording-warnings">Recording warnings</a></li>
+<li><a class="reference internal" href="#ensuring-a-function-triggers-a-deprecation-warning">Ensuring a function triggers a deprecation warning</a></li>
+</ul>
+</li>
+</ul>
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="contents.html">Documentation overview</a><ul>
+  </ul></li>
+</ul><h3>Useful Links</h3>
+<ul>
+  <li>
+    <a href="https://www.indiegogo.com/projects/python-testing-sprint-mid-2016#/">
+      <b>Sprint funding campaign</b>
+    </a>
+  </li>
+  <li><a href="index.html">The pytest Website</a></li>
+  <li><a href="contributing.html">Contribution Guide</a></li>
+  <li><a href="https://pypi.python.org/pypi/pytest">pytest @ PyPI</a></li>
+  <li><a href="https://github.com/pytest-dev/pytest/">pytest @ GitHub</a></li>
+  <li><a href="http://plugincompat.herokuapp.com/">3rd party plugins</a></li>
+  <li><a href="https://github.com/pytest-dev/pytest/issues">Issue Tracker</a></li>
+  <li><a href="http://pytest.org/latest/pytest.pdf">PDF Documentation</a>
+</ul>
+
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+
+  <div class="footer">
+    &copy; Copyright 2015, holger krekel and pytest-dev team.
+    Created using <a href="http://sphinx.pocoo.org/">Sphinx</a>.
+  </div>
+  
+<script type="text/javascript">
+
+  var _gaq = _gaq || [];
+  _gaq.push(['_setAccount', 'UA-7597274-13']);
+  _gaq.push(['_trackPageview']);
+
+  (function() {
+    var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+    ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+  })();
+
+</script>
+
+  </body>
+</html>

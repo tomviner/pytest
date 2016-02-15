@@ -1,0 +1,334 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>Installing and Using plugins</title>
+    
+    <link rel="stylesheet" href="_static/flasky.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    './',
+        VERSION:     '2.9.0.dev1',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <link rel="shortcut icon" href="_static/pytest1favi.ico"/>
+    <link rel="top" title="None" href="index.html" />
+    <link rel="next" title="Cache: working with cross-testrun state" href="cache.html" />
+    <link rel="prev" title="Working with non-python tests" href="example/nonpython.html" />
+   
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9">
+
+  </head>
+  <body>
+<div align="center" xmlns="http://www.w3.org/1999/html" style="background-color: lightgreen;  padding: .5em">
+  <h4>
+      Want to help improve pytest?  Please 
+    <a href="https://www.indiegogo.com/projects/python-testing-sprint-mid-2016#/">
+        contribute to
+    </a>
+    or 
+    <a href="announce/sprint2016.html">
+        join
+    </a>
+    our upcoming sprint in June 2016!
+
+  </h4>
+</div>
+  
+  
+  
+
+
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="cache.html" title="Cache: working with cross-testrun state"
+             accesskey="N">next</a></li>
+        <li class="right" >
+          <a href="example/nonpython.html" title="Working with non-python tests"
+             accesskey="P">previous</a> |</li>
+        <li><a href="contents.html">pytest-2.9.0.dev1</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="installing-and-using-plugins">
+<span id="using-plugins"></span><span id="extplugins"></span><span id="external-plugins"></span><h1>Installing and Using plugins<a class="headerlink" href="#installing-and-using-plugins" title="Permalink to this headline">¶</a></h1>
+<p>This section talks about installing and using third party plugins.
+For writing your own plugins, please refer to <a class="reference internal" href="writing_plugins.html#writing-plugins"><em>Writing plugins</em></a>.</p>
+<p>Installing a third party plugin can be easily done with <tt class="docutils literal"><span class="pre">pip</span></tt>:</p>
+<div class="highlight-python"><div class="highlight"><pre>pip install pytest-NAME
+pip uninstall pytest-NAME
+</pre></div>
+</div>
+<p>If a plugin is installed, <tt class="docutils literal"><span class="pre">pytest</span></tt> automatically finds and integrates it,
+there is no need to activate it.</p>
+<p>Here is a little annotated list for some popular plugins:</p>
+<ul class="simple">
+<li><a class="reference external" href="http://pypi.python.org/pypi/pytest-django">pytest-django</a>: write tests
+for <a class="reference external" href="https://www.djangoproject.com/">django</a> apps, using pytest integration.</li>
+<li><a class="reference external" href="http://pypi.python.org/pypi/pytest-twisted">pytest-twisted</a>: write tests
+for <a class="reference external" href="http://twistedmatrix.com">twisted</a> apps, starting a reactor and
+processing deferreds from test functions.</li>
+<li><a class="reference external" href="http://pypi.python.org/pypi/pytest-catchlog">pytest-catchlog</a>:
+to capture and assert about messages from the logging module</li>
+<li><a class="reference external" href="http://pypi.python.org/pypi/pytest-cov">pytest-cov</a>:
+coverage reporting, compatible with distributed testing</li>
+<li><a class="reference external" href="http://pypi.python.org/pypi/pytest-xdist">pytest-xdist</a>:
+to distribute tests to CPUs and remote hosts, to run in boxed
+mode which allows to survive segmentation faults, to run in
+looponfailing mode, automatically re-running failing tests
+on file changes, see also <a class="reference internal" href="xdist.html#xdist"><em>xdist: pytest distributed testing plugin</em></a></li>
+<li><a class="reference external" href="http://pypi.python.org/pypi/pytest-instafail">pytest-instafail</a>:
+to report failures while the test run is happening.</li>
+<li><a class="reference external" href="http://pypi.python.org/pypi/pytest-bdd">pytest-bdd</a> and
+<a class="reference external" href="http://pypi.python.org/pypi/pytest-konira">pytest-konira</a>
+to write tests using behaviour-driven testing.</li>
+<li><a class="reference external" href="http://pypi.python.org/pypi/pytest-timeout">pytest-timeout</a>:
+to timeout tests based on function marks or global definitions.</li>
+<li><a class="reference external" href="http://pypi.python.org/pypi/pytest-pep8">pytest-pep8</a>:
+a <tt class="docutils literal"><span class="pre">--pep8</span></tt> option to enable PEP8 compliance checking.</li>
+<li><a class="reference external" href="https://pypi.python.org/pypi/pytest-flakes">pytest-flakes</a>:
+check source code with pyflakes.</li>
+<li><a class="reference external" href="http://pypi.python.org/pypi/oejskit">oejskit</a>:
+a plugin to run javascript unittests in live browsers.</li>
+</ul>
+<p>To see a complete list of all plugins with their latest testing
+status against different py.test and Python versions, please visit
+<a class="reference external" href="http://plugincompat.herokuapp.com/">plugincompat</a>.</p>
+<p>You may also discover more plugins through a <a class="reference external" href="http://pypi.python.org/pypi?%3Aaction=search&amp;term=pytest-&amp;submit=search">pytest- pypi.python.org search</a>.</p>
+<div class="section" id="requiring-loading-plugins-in-a-test-module-or-conftest-file">
+<h2>Requiring/Loading plugins in a test module or conftest file<a class="headerlink" href="#requiring-loading-plugins-in-a-test-module-or-conftest-file" title="Permalink to this headline">¶</a></h2>
+<p>You can require plugins in a test module or a conftest file like this:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">pytest_plugins</span> <span class="o">=</span> <span class="s">&quot;myapp.testsupport.myplugin&quot;</span><span class="p">,</span>
+</pre></div>
+</div>
+<p>When the test module or conftest plugin is loaded the specified plugins
+will be loaded as well.</p>
+<blockquote>
+<div>pytest_plugins = &#8220;myapp.testsupport.myplugin&#8221;</div></blockquote>
+<p>which will import the specified module as a <tt class="docutils literal"><span class="pre">pytest</span></tt> plugin.</p>
+</div>
+<div class="section" id="finding-out-which-plugins-are-active">
+<span id="findpluginname"></span><h2>Finding out which plugins are active<a class="headerlink" href="#finding-out-which-plugins-are-active" title="Permalink to this headline">¶</a></h2>
+<p>If you want to find out which plugins are active in your
+environment you can type:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">py</span><span class="o">.</span><span class="n">test</span> <span class="o">--</span><span class="n">traceconfig</span>
+</pre></div>
+</div>
+<p>and will get an extended test header which shows activated plugins
+and their names. It will also print local plugins aka
+<a class="reference internal" href="writing_plugins.html#conftest"><em>conftest.py</em></a> files when they are loaded.</p>
+</div>
+<div class="section" id="deactivating-unregistering-a-plugin-by-name">
+<span id="cmdunregister"></span><h2>Deactivating / unregistering a plugin by name<a class="headerlink" href="#deactivating-unregistering-a-plugin-by-name" title="Permalink to this headline">¶</a></h2>
+<p>You can prevent plugins from loading or unregister them:</p>
+<div class="highlight-python"><div class="highlight"><pre>py.test -p no:NAME
+</pre></div>
+</div>
+<p>This means that any subsequent try to activate/load the named
+plugin will not work.</p>
+<p>If you want to unconditionally disable a plugin for a project, you can add
+this option to your <tt class="docutils literal"><span class="pre">pytest.ini</span></tt> file:</p>
+<div class="highlight-ini"><div class="highlight"><pre><span class="k">[pytest]</span>
+<span class="na">addopts</span> <span class="o">=</span> <span class="s">-p no:NAME</span>
+</pre></div>
+</div>
+<p>Alternatively to disable it only in certain environments (for example in a
+CI server), you can set <tt class="docutils literal"><span class="pre">PYTEST_ADDOPTS</span></tt> environment variable to
+<tt class="docutils literal"><span class="pre">-p</span> <span class="pre">no:name</span></tt>.</p>
+<p>See <a class="reference internal" href="#findpluginname"><em>Finding out which plugins are active</em></a> for how to obtain the name of a plugin.</p>
+</div>
+<div class="section" id="pytest-default-plugin-reference">
+<span id="builtin-plugins"></span><h2>Pytest default plugin reference<a class="headerlink" href="#pytest-default-plugin-reference" title="Permalink to this headline">¶</a></h2>
+<p>You can find the source code for the following plugins
+in the <a class="reference external" href="https://github.com/pytest-dev/pytest">pytest repository</a>.</p>
+<table border="1" class="longtable docutils">
+<colgroup>
+<col width="10%" />
+<col width="90%" />
+</colgroup>
+<tbody valign="top">
+<tr class="row-odd"><td><tt class="xref py py-obj docutils literal"><span class="pre">_pytest.assertion</span></tt></td>
+<td></td>
+</tr>
+<tr class="row-even"><td><tt class="xref py py-obj docutils literal"><span class="pre">_pytest.cacheprovider</span></tt></td>
+<td></td>
+</tr>
+<tr class="row-odd"><td><tt class="xref py py-obj docutils literal"><span class="pre">_pytest.capture</span></tt></td>
+<td></td>
+</tr>
+<tr class="row-even"><td><tt class="xref py py-obj docutils literal"><span class="pre">_pytest.config</span></tt></td>
+<td></td>
+</tr>
+<tr class="row-odd"><td><tt class="xref py py-obj docutils literal"><span class="pre">_pytest.doctest</span></tt></td>
+<td></td>
+</tr>
+<tr class="row-even"><td><tt class="xref py py-obj docutils literal"><span class="pre">_pytest.genscript</span></tt></td>
+<td></td>
+</tr>
+<tr class="row-odd"><td><tt class="xref py py-obj docutils literal"><span class="pre">_pytest.helpconfig</span></tt></td>
+<td></td>
+</tr>
+<tr class="row-even"><td><tt class="xref py py-obj docutils literal"><span class="pre">_pytest.junitxml</span></tt></td>
+<td></td>
+</tr>
+<tr class="row-odd"><td><tt class="xref py py-obj docutils literal"><span class="pre">_pytest.mark</span></tt></td>
+<td></td>
+</tr>
+<tr class="row-even"><td><tt class="xref py py-obj docutils literal"><span class="pre">_pytest.monkeypatch</span></tt></td>
+<td></td>
+</tr>
+<tr class="row-odd"><td><tt class="xref py py-obj docutils literal"><span class="pre">_pytest.nose</span></tt></td>
+<td></td>
+</tr>
+<tr class="row-even"><td><tt class="xref py py-obj docutils literal"><span class="pre">_pytest.pastebin</span></tt></td>
+<td></td>
+</tr>
+<tr class="row-odd"><td><tt class="xref py py-obj docutils literal"><span class="pre">_pytest.pdb</span></tt></td>
+<td></td>
+</tr>
+<tr class="row-even"><td><tt class="xref py py-obj docutils literal"><span class="pre">_pytest.pytester</span></tt></td>
+<td></td>
+</tr>
+<tr class="row-odd"><td><tt class="xref py py-obj docutils literal"><span class="pre">_pytest.python</span></tt></td>
+<td></td>
+</tr>
+<tr class="row-even"><td><tt class="xref py py-obj docutils literal"><span class="pre">_pytest.recwarn</span></tt></td>
+<td></td>
+</tr>
+<tr class="row-odd"><td><tt class="xref py py-obj docutils literal"><span class="pre">_pytest.resultlog</span></tt></td>
+<td></td>
+</tr>
+<tr class="row-even"><td><tt class="xref py py-obj docutils literal"><span class="pre">_pytest.runner</span></tt></td>
+<td></td>
+</tr>
+<tr class="row-odd"><td><tt class="xref py py-obj docutils literal"><span class="pre">_pytest.main</span></tt></td>
+<td></td>
+</tr>
+<tr class="row-even"><td><tt class="xref py py-obj docutils literal"><span class="pre">_pytest.skipping</span></tt></td>
+<td></td>
+</tr>
+<tr class="row-odd"><td><tt class="xref py py-obj docutils literal"><span class="pre">_pytest.terminal</span></tt></td>
+<td></td>
+</tr>
+<tr class="row-even"><td><tt class="xref py py-obj docutils literal"><span class="pre">_pytest.tmpdir</span></tt></td>
+<td></td>
+</tr>
+<tr class="row-odd"><td><tt class="xref py py-obj docutils literal"><span class="pre">_pytest.unittest</span></tt></td>
+<td></td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+            <p class="logo"><a href="contents.html">
+              <img class="logo" src="_static/pytest1.png" alt="Logo"/>
+            </a></p><h3><a href="contents.html">Table Of Contents</a></h3>
+
+<ul>
+  <li><a href="index.html">Home</a></li>
+  <li><a href="contents.html">Contents</a></li>
+  <li><a href="getting-started.html">Install</a></li>
+  <li><a href="example/index.html">Examples</a></li>
+  <li><a href="customize.html">Customize</a></li>
+  <li><a href="contact.html">Contact</a></li>
+  <li><a href="talks.html">Talks/Posts</a></li>
+  <li><a href="changelog.html">Changelog</a></li>
+</ul>
+  <hr>
+  <ul>
+<li><a class="reference internal" href="#">Installing and Using plugins</a><ul>
+<li><a class="reference internal" href="#requiring-loading-plugins-in-a-test-module-or-conftest-file">Requiring/Loading plugins in a test module or conftest file</a></li>
+<li><a class="reference internal" href="#finding-out-which-plugins-are-active">Finding out which plugins are active</a></li>
+<li><a class="reference internal" href="#deactivating-unregistering-a-plugin-by-name">Deactivating / unregistering a plugin by name</a></li>
+<li><a class="reference internal" href="#pytest-default-plugin-reference">Pytest default plugin reference</a></li>
+</ul>
+</li>
+</ul>
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="contents.html">Documentation overview</a><ul>
+      <li>Previous: <a href="example/nonpython.html" title="previous chapter">Working with non-python tests</a></li>
+      <li>Next: <a href="cache.html" title="next chapter">Cache: working with cross-testrun state</a></li>
+  </ul></li>
+</ul><h3>Useful Links</h3>
+<ul>
+  <li>
+    <a href="https://www.indiegogo.com/projects/python-testing-sprint-mid-2016#/">
+      <b>Sprint funding campaign</b>
+    </a>
+  </li>
+  <li><a href="index.html">The pytest Website</a></li>
+  <li><a href="contributing.html">Contribution Guide</a></li>
+  <li><a href="https://pypi.python.org/pypi/pytest">pytest @ PyPI</a></li>
+  <li><a href="https://github.com/pytest-dev/pytest/">pytest @ GitHub</a></li>
+  <li><a href="http://plugincompat.herokuapp.com/">3rd party plugins</a></li>
+  <li><a href="https://github.com/pytest-dev/pytest/issues">Issue Tracker</a></li>
+  <li><a href="http://pytest.org/latest/pytest.pdf">PDF Documentation</a>
+</ul>
+
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+
+  <div class="footer">
+    &copy; Copyright 2015, holger krekel and pytest-dev team.
+    Created using <a href="http://sphinx.pocoo.org/">Sphinx</a>.
+  </div>
+  
+<script type="text/javascript">
+
+  var _gaq = _gaq || [];
+  _gaq.push(['_setAccount', 'UA-7597274-13']);
+  _gaq.push(['_trackPageview']);
+
+  (function() {
+    var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+    ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+  })();
+
+</script>
+
+  </body>
+</html>
