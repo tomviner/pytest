@@ -128,7 +128,7 @@ Thanks <a class="reference external" href="https://github.com/MichaelAquilina">&
 <li>The <tt class="docutils literal"><span class="pre">-s</span></tt> and <tt class="docutils literal"><span class="pre">-c</span></tt> options should now work under <tt class="docutils literal"><span class="pre">xdist</span></tt>;
 <tt class="docutils literal"><span class="pre">Config.fromdictargs</span></tt> now represents its input much more faithfully.
 Thanks to <a class="reference external" href="https://github.com/bukzor">&#64;bukzor</a> for the complete PR (<a class="reference external" href="https://github.com/pytest-dev/pytest/issues/680">#680</a>).</li>
-<li>Fix (<a class="reference external" href="https://github.com/pytest-dev/pytest/pull/1290">#1290</a>): support Python 3.5&#8217;s <cite>&#64;</cite> operator in assertion rewriting.
+<li>Fix (<a class="reference external" href="https://github.com/pytest-dev/pytest/pull/1290">#1290</a>): support Python 3.5&#8217;s <tt class="docutils literal"><span class="pre">&#64;</span></tt> operator in assertion rewriting.
 Thanks <a class="reference external" href="https://github.com/Shinkenjoe">&#64;Shinkenjoe</a> for report with test case and <a class="reference external" href="https://github.com/tomviner">&#64;tomviner</a> for the PR.</li>
 <li>Fix formatting utf-8 explanation messages (<a class="reference external" href="https://github.com/pytest-dev/pytest/issues/1379">#1379</a>).
 Thanks <a class="reference external" href="https://github.com/biern">&#64;biern</a> for the PR.</li>
@@ -333,10 +333,10 @@ Thanks Bruno Oliveira for the PR.</p>
 <li><p class="first">fix issue768: docstrings found in python modules were not setting up session
 fixtures. Thanks Jason R. Coombs for reporting and Bruno Oliveira for the PR.</p>
 </li>
-<li><p class="first">added <cite>tmpdir_factory</cite>, a session-scoped fixture that can be used to create
+<li><p class="first">added <tt class="docutils literal"><span class="pre">tmpdir_factory</span></tt>, a session-scoped fixture that can be used to create
 directories under the base temporary directory. Previously this object was
-installed as a <cite>_tmpdirhandler</cite> attribute of the <cite>config</cite> object, but now it
-is part of the official API and using <cite>config._tmpdirhandler</cite> is
+installed as a <tt class="docutils literal"><span class="pre">_tmpdirhandler</span></tt> attribute of the <tt class="docutils literal"><span class="pre">config</span></tt> object, but now it
+is part of the official API and using <tt class="docutils literal"><span class="pre">config._tmpdirhandler</span></tt> is
 deprecated.
 Thanks Bruno Oliveira for the PR.</p>
 </li>
@@ -365,7 +365,7 @@ situations such as: all tests either were skipped or xpass/xfailed,
 or no tests were run at all (related to issue500).
 Thanks Eric Siegerman.</p>
 </li>
-<li><p class="first">New <cite>testpaths</cite> ini option: list of directories to search for tests
+<li><p class="first">New <tt class="docutils literal"><span class="pre">testpaths</span></tt> ini option: list of directories to search for tests
 when executing pytest from the root directory. This can be used
 to speed up test collection when a project has well specified directories
 for tests, being usually more practical than configuring norecursedirs for
@@ -461,8 +461,8 @@ Thanks Thomas Grainger for the report and Bruno Oliveira for the PR.</p>
 <li><p class="first">issue951: add new record_xml_property fixture, that supports logging
 additional information on xml output. Thanks David Diaz for the PR.</p>
 </li>
-<li><p class="first">issue949: paths after normal options (for example <cite>-s</cite>, <cite>-v</cite>, etc) are now
-properly used to discover <cite>rootdir</cite> and <cite>ini</cite> files.
+<li><p class="first">issue949: paths after normal options (for example <tt class="docutils literal"><span class="pre">-s</span></tt>, <tt class="docutils literal"><span class="pre">-v</span></tt>, etc) are now
+properly used to discover <tt class="docutils literal"><span class="pre">rootdir</span></tt> and <tt class="docutils literal"><span class="pre">ini</span></tt> files.
 Thanks Peter Lauri for the report and Bruno Oliveira for the PR.</p>
 </li>
 </ul>
@@ -470,11 +470,11 @@ Thanks Peter Lauri for the report and Bruno Oliveira for the PR.</p>
 <div class="section" id="compared-to-2-7-2">
 <h1>2.7.3 (compared to 2.7.2)<a class="headerlink" href="#compared-to-2-7-2" title="Permalink to this headline">¶</a></h1>
 <ul class="simple">
-<li>Allow &#8216;dev&#8217;, &#8216;rc&#8217;, or other non-integer version strings in <cite>importorskip</cite>.
+<li>Allow &#8216;dev&#8217;, &#8216;rc&#8217;, or other non-integer version strings in <tt class="docutils literal"><span class="pre">importorskip</span></tt>.
 Thanks to Eric Hunsberger for the PR.</li>
 <li>fix issue856: consider &#8211;color parameter in all outputs (for example
 &#8211;fixtures). Thanks Barney Gale for the report and Bruno Oliveira for the PR.</li>
-<li>fix issue855: passing str objects as <cite>plugins</cite> argument to pytest.main
+<li>fix issue855: passing str objects as <tt class="docutils literal"><span class="pre">plugins</span></tt> argument to pytest.main
 is now interpreted as a module name to be imported and registered as a
 plugin, instead of silently having no effect.
 Thanks xmo-odoo for the report and Bruno Oliveira for the PR.</li>
@@ -1953,7 +1953,7 @@ Can be specified multiple times.</li>
 files that are relative to the specified dir.</li>
 <li>new funcarg: &#8220;pytestconfig&#8221; is the pytest config object for access
 to command line args and can now be easily used in a test.</li>
-<li>install &#8216;py.test&#8217; and <cite>py.which</cite> with a <tt class="docutils literal"><span class="pre">-$VERSION</span></tt> suffix to
+<li>install <tt class="docutils literal"><span class="pre">py.test</span></tt> and <tt class="docutils literal"><span class="pre">py.which</span></tt> with a <tt class="docutils literal"><span class="pre">-$VERSION</span></tt> suffix to
 disambiguate between Python3, python2.X, Jython and PyPy installed versions.</li>
 <li>new &#8220;pytestconfig&#8221; funcarg allows access to test config object</li>
 <li>new &#8220;pytest_report_header&#8221; hook can return additional lines

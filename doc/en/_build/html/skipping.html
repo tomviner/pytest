@@ -84,7 +84,7 @@ corresponding to the &#8220;short&#8221; letters shown in the test progress:</p>
 <div class="versionadded">
 <p><span class="versionmodified">New in version 2.9.</span></p>
 </div>
-<p>The simplest way to skip a test function is to mark it with the <cite>skip</cite> decorator
+<p>The simplest way to skip a test function is to mark it with the <tt class="docutils literal"><span class="pre">skip</span></tt> decorator
 which may be passed an optional <tt class="docutils literal"><span class="pre">reason</span></tt>:</p>
 <div class="highlight-python"><div class="highlight"><pre><span class="nd">@pytest.mark.skip</span><span class="p">(</span><span class="n">reason</span><span class="o">=</span><span class="s">&quot;no way of currently testing this&quot;</span><span class="p">)</span>
 <span class="k">def</span> <span class="nf">test_the_unknown</span><span class="p">():</span>
@@ -96,7 +96,7 @@ which may be passed an optional <tt class="docutils literal"><span class="pre">r
 <div class="versionadded">
 <p><span class="versionmodified">New in version 2.0,: </span>2.4</p>
 </div>
-<p>If you wish to skip something conditionally then you can use <cite>skipif</cite> instead.
+<p>If you wish to skip something conditionally then you can use <tt class="docutils literal"><span class="pre">skipif</span></tt> instead.
 Here is an example of marking a test function to be skipped
 when run on a Python3.3 interpreter:</p>
 <div class="highlight-python"><div class="highlight"><pre><span class="kn">import</span> <span class="nn">sys</span>

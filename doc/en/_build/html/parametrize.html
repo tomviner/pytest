@@ -186,7 +186,7 @@ it&#8217;s easier to write and produces less line noise.</p>
 or implement some dynamism for determining the parameters or scope
 of a fixture.   For this, you can use the <tt class="docutils literal"><span class="pre">pytest_generate_tests</span></tt> hook
 which is called when collecting a test function.  Through the passed in
-<cite>metafunc</cite> object you can inspect the requesting test context and, most
+<tt class="docutils literal"><span class="pre">metafunc</span></tt> object you can inspect the requesting test context and, most
 importantly, you can call <tt class="docutils literal"><span class="pre">metafunc.parametrize()</span></tt> to cause
 parametrization.</p>
 <p>For example, let&#8217;s say we want to run a test taking string inputs which
