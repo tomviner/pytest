@@ -7,8 +7,6 @@ import py
 import pytest
 from _pytest.mark import MarkInfo, MarkDecorator
 
-MISSING = object()
-
 
 def pytest_addoption(parser):
     group = parser.getgroup("general")
@@ -132,9 +130,8 @@ class MarkEvaluator:
                 else:
                     arglist = [(self.holder.args, self.holder.kwargs)]
                 for args, kwargs in arglist:
-                    condition = kwargs.get('condition', MISSING)
-                    if condition is not MISSING:
-                        args = (condition,)
+                    if 'condition' in kwargs:
+                        args = (kwargs['condition'],)
                     for expr in args:
                         self.expr = expr
                         if isinstance(expr, py.builtin._basestring):
